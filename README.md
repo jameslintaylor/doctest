@@ -1,6 +1,6 @@
 Python-like doctest support for Clojure.
 
-# Usage
+## Usage
 
 Scan your `./src` directory and generate doctests:
 
@@ -9,7 +9,7 @@ $ clj -m jameslintaylor.doctest
 Generated tests in ./target/doctest/
 ```
 
-# Test format
+## Test format
 
 For each var on your source path containing `Usage:` doc examples, e.g.:
 
@@ -50,6 +50,6 @@ Doctest will generate a corresponding test, e.g.:
   (clojure.test/is (= true (clojure.core/= (jameslintaylor.example/foo 1) (jameslintaylor.example/foo 2)))))
 ```
 
-# Running the generated tests
+## Running the generated tests
 
 Add `./target/doctest` as an extra path to your test runner of choice and run your tests as you would otherwise.
