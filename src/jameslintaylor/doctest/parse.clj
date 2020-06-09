@@ -5,17 +5,6 @@
    [clojure.spec.alpha :as s]
    [clojure.string :as string]))
 
-(defn doc-assertions
-  [var]
-  (let [{:keys [doc name ns]} (meta var)
-        [_ doctests]          (string/split doc #"\s*Usage:\s*")]
-    (when doctests
-      (map (fn [s]
-             (when-let [[_ expr expected] (re-matches #"(\(.*\))\s*(.*)" s)]
-               [(edn/read-string (string/replace expr (str name) (str ns "/" name)))
-                (edn/read-string expected)]))
-           (rest (string/split doctests #"\s*=>\s*"))))))
-
 (defn delimited
   "Given a delimiting regex, return a spec for strings delimited by the
   regex.
