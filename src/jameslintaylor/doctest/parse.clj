@@ -31,7 +31,7 @@
 
 (s/def ::assertion
   (s/conformer #(if-let [[_ msg expr expected]
-                         (re-matches #"\s*(\S.*)?\s*=>\s*(\(.*\))\s*(.*)" %)]
+                         (re-matches #"\s*(\S.*)?\s*=>\s*(.*)\s*\n(.*)" %)]
                   {:msg msg :expr expr :expected expected}
                   invalid)))
 
