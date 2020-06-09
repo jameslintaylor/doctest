@@ -1,3 +1,13 @@
+# Is this useful in Clojure?
+
+This is a tool one can use to assert that their documented usage examples do not speak folly.
+
+Is this useful in Clojure? That's entirely up to you. You might prefer to use `comment` blocks or `:test` metadata, or do away with this fluff entirely and live on for a happy and care-free existence. 
+
+If you like the idea, but take exception to this particular tool, presumably for its lack of pizazz, you may find solace in one of these Clojure libraries that vow to do precisely the same thing:
+- https://github.com/drojas/doctest
+- https://github.com/Kobold/clj-doc-test
+
 ## Usage
 
 Scan your `./src` directory and generate doctests:
@@ -9,7 +19,7 @@ Generated tests in ./target/doctest/
 
 ## Test format
 
-For each var on your source path containing `Usage:` doc examples, e.g.:
+Upon encountering a var with `Usage:` doc examples, e.g.:
 
 ```clojure
 (ns jameslintaylor.example)
