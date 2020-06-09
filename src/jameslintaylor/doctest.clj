@@ -16,7 +16,7 @@
   [ns]
   (let [f (str "./target/doctest/" (ns-test-path ns) "_test.clj")]
     (io/make-parents f)
-    (spit f (format/format-ns-tests ns))))
+    (spit f (format/format-test-file ns))))
 
 (defn dir-nses
   [dir]

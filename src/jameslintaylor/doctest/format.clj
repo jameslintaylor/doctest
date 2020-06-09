@@ -38,7 +38,7 @@
   [ns]
   (let [var-tests (->> (vals (ns-interns ns))
                        (filter parse/has-doctest?)
-                       (map format-var-test-decl))]
+                       (map format-var-test))]
     (format-cljfmt
      (format "%s%s"
              (format-ns-decl ns)
