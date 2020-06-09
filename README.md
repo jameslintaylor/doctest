@@ -50,6 +50,10 @@ Doctest will generate a corresponding test, e.g.:
   (clojure.test/is (= true (clojure.core/= (jameslintaylor.example/foo 1) (jameslintaylor.example/foo 2)))))
 ```
 
+## Running the generated tests
+
+Simply add ./target/doctest as an extra path to your test runner of choice and run your tests as you would otherwise.
+
 ## License
 
 Copyright © 2020 James Lin Taylor
