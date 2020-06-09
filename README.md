@@ -1,5 +1,3 @@
-Python-like doctest support for Clojure.
-
 ## Usage
 
 Scan your `./src` directory and generate doctests:
