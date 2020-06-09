@@ -1,4 +1,6 @@
-# jameslintaylor.doctest
+# (:doc)test
+
+Python-like doctest support for Clojure.
 
 ## Usage
 
@@ -53,10 +55,3 @@ Doctest will generate a corresponding test, e.g.:
 ## Running the generated tests
 
 Simply add ./target/doctest as an extra path to your test runner of choice and run your tests as you would otherwise.
-
-## License
-
-Copyright © 2020 James Lin Taylor
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
