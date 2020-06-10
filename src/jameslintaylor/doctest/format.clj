@@ -48,11 +48,11 @@
 
 (defn format-test-file
   [ns]
-  (let [ns-str    (form-str (ns-form ns))
-        var-tests (into []
+  (let [var-tests (into []
                         (comp (filter parse/has-doctest?)
                               (map var-test-form)
                               (map form-str))
                         (vals (ns-interns ns)))]
-    (format-cljfmt "%s%s" ns-str
-                   (apply str (map (partial str "\n\n") var-tests)))))
+    (format "%s%s"
+            (form-str (ns-form ns))
+            (apply str (map (partial str "\n\n") var-tests)))))
