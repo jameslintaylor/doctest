@@ -3,13 +3,13 @@
          org.clojure/tools.namespace {:mvn/version "1.0.0"}
          cljfmt                      {:mvn/version "0.6.4"}}
  :aliases
- {:test
-  {:extra-paths ["target/doctest"]
-   :extra-deps  {com.cognitect/test-runner
-                 {:git/url "https://github.com/cognitect-labs/test-runner"
-                  :sha     "f7ef16dc3b8332b0d77bc0274578ad5270fbfedd"}}
-   :main-opts   ["-m" "cognitect.test-runner"
-                 "-d" "target/doctest"]}
+ {:test {:extra-paths ["test" "target/doctest"]
+         :extra-deps  {com.cognitect/test-runner
+                       {:git/url "https://github.com/cognitect-labs/test-runner"
+                        :sha     "f7ef16dc3b8332b0d77bc0274578ad5270fbfedd"}}
+         :main-opts   ["-m" "cognitect.test-runner"
+                       "-d" "test"
+                       "-d" "target/doctest"]}
 
   :uberjar {:extra-deps {seancorfield/depstar {:mvn/version "0.5.2"}}
             :main-opts  ["-m" "hf.depstar.uberjar" "jameslintaylor.doctest.jar"
