@@ -2,7 +2,6 @@
   (:require
    [clojure.java.io :as io]
    [clojure.string :as string]
-   [clojure.test :as test]
    [clojure.tools.namespace.find :as namespace.find]
    [jameslintaylor.doctest.format :as format]))
 
@@ -28,10 +27,7 @@
 
 (defn -main [& [mode]]
   (gen-doctests)
-  (let [test-dir "./target/doctest/"]
-    (println "Generated tests in" test-dir)
-    (when (= ":run" mode)
-      (apply test/run-tests (dir-nses "./src")))))
+  (println "Generated tests in" "./target/doctest/"))
 
 ;;;
 ;;; Test vars
