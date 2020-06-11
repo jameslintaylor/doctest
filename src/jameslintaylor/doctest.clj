@@ -13,7 +13,7 @@
 
 (defn write-ns-tests
   [ns]
-  (let [f (str "./target/doctest/" (ns-test-path ns) "_test.clj")]
+  (let [f (str "./target/doctest/" (ns-test-path ns) "_doctest.clj")]
     (io/make-parents f)
     (spit f (format/format-test-file ns))))
 
