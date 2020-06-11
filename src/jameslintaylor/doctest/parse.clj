@@ -1,60 +1,75 @@
 (ns jameslintaylor.doctest.parse
   "Docstring parsing utilities."
   (:require
-   [clojure.edn :as edn]
    [clojure.spec.alpha :as s]
    [clojure.string :as string]))
+
+(def ^:const invalid
+  ":clojure.spec.alpha/invalid
+
+  Required because of a bug in the spec for clojure.core/let"
+  ::s/invalid)
 
 (defn delimited
   "Given a delimiting regex, return a spec for strings delimited by the
   regex.
 
   Optionally takes min-splits and max-splits to enforce a range of
-  splits considered valid."
+  splits considered valid.
+
+  Usage:
+
+  => (s/conform (delimited #\"\\s*,\\s*\") \"foo, bar , baz\")
+  [\"foo\" \"bar\" \"baz\"]
+
+  invalid when more splits than max-splits
+  => (s/conform (delimited #\";\" 1 2) \"a;b;c\")
+  invalid
+
+  invalid when less splits than min-splits
+  => (s/conform (delimited #\";\" 3 4) \"a;b\")
+  invalid"
   ([delimiting-regex]
    (s/and string?
           (s/conformer #(string/split % delimiting-regex))))
   ([delimiting-regex min-splits max-splits]
    (s/and string?
-          (s/conformer #(let [d (string/split % delimiting-regex max-splits)
+          (s/conformer #(let [d (string/split % delimiting-regex)
                               n (count d)]
                           (if (and (<= min-splits n)
                                    (>= max-splits n))
                             d
                             ::s/invalid))))))
 
-(def ^:const invalid
-  ":clojure.spec.alpha/invalid
-
-  Required because of a bug in the spec for clojure.core/if-let"
-  ::s/invalid)
-
 (s/def ::assertion
-  (s/conformer #(if-let [[_ msg expr expected]
-                         (re-matches #"\s*(\S.*)?\s*=>\s*(.*)\s*\n(.*)" %)]
-                  {:msg msg :expr expr :expected expected}
-                  invalid)))
+  (let [msg-pattern  "(.+)?"
+        line-pattern "((?:(?:\"[^\"]*\")|.)*)"
+        assertion-re (re-pattern (str "\\s*"
+                                      msg-pattern
+                                      "\\s*=>\\s"
+                                      line-pattern
+                                      "\\n\\s*"
+                                      line-pattern
+                                      "\\s*"))]
+    (s/conformer #(if-let [[_ msg expr expected]
+                           (re-matches assertion-re %)]
+                    (cond-> {:expr expr :expected expected}
+                      msg (assoc :msg msg))
+                    invalid))))
 
 (s/def ::doctest
   (s/and (delimited #"\n\n")
-         (s/conformer #(or (rest %) ::s/invalid))
          (s/coll-of ::assertion)))
 
-(s/def ::docstring-with-doctest
-  (s/and (delimited #"Usage:" 2 2)
+(s/def ::doc-with-doctest
+  (s/and (delimited #"\n\n.*Usage:\n\n" 2 2)
          (s/tuple string? ::doctest)))
-
-(def ^:private doc (comp :doc meta))
-
-(defn has-doctest?
-  "Given a var, return true iff the var's doc contains a doctest."
-  [var]
-  (s/valid? ::docstring-with-doctest (doc var)))
 
 (defn- resolve-sym
   [ns sym]
-  (let [{:keys [name ns]} (meta (ns-resolve ns sym))]
-    (symbol (str ns) (str name))))
+  (if-let [{:keys [name ns]} (meta (ns-resolve ns sym))]
+    (symbol (str ns) (str name))
+    sym))
 
 (defn- resolve-all
   [ns expr]
@@ -65,13 +80,30 @@
       expr)))
 
 (defn doctest-assertions
-  [var]
-  (let [[_ assertions] (s/conform ::docstring-with-doctest (doc var))
-        read-with-syms (comp (partial resolve-all (:ns (meta var)))
-                             edn/read-string)]
-    (map (fn [a]
-           (-> a
-               (update :expr read-with-syms)
-               (update :expected read-with-syms)))
-         assertions)))
+  "Given a var, return its doctest assertions or nil if the var does not
+  contain a doctest.
 
+  A doctest assertion will be a map including values for:
+  - :expr
+  - :expected
+
+  A doctest assertion may include values for:
+  - :msg
+
+  Usage:
+
+  returns nil when no doctest
+  => (doctest-assertions (defn foo \"No examples!\" []))
+  nil"
+  [var]
+  (let [{:keys [doc ns]} (meta var)
+        doc-with-doctest (s/conform ::doc-with-doctest doc)]
+    (when-not (s/invalid? doc-with-doctest)
+      (let [[_ assertions] doc-with-doctest
+            read-with-syms (comp (partial resolve-all (:ns (meta var)))
+                                 read-string)]
+        (map (fn [a]
+               (-> a
+                   (update :expr read-with-syms)
+                   (update :expected read-with-syms)))
+             assertions)))))

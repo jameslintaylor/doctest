@@ -34,6 +34,10 @@
   [form]
   (format "\"%s\"" form))
 
+(defmethod form-str java.util.regex.Pattern
+  [form]
+  (format "#\"%s\"" form))
+
 (defmethod form-str nil
   [_]
   "nil")
@@ -53,7 +57,7 @@
   [var]
   (when-let [assertions (parse/doctest-assertions var)]
     (wrap 3 `(~'deftest ~(symbol "^:doctest") ~(symbol (str (-> var meta :name) "-test"))
-               ~@(map assertion-form assertions)))))
+              ~@(map assertion-form assertions)))))
 
 (defn ns-form
   [ns]
@@ -66,8 +70,8 @@
 (defn format-test-file
   [ns]
   (let [var-tests (into []
-                        (comp (filter parse/has-doctest?)
-                              (map var-test-form)
+                        (comp (map var-test-form)
+                              (filter identity)
                               (map form-str))
                         (vals (ns-interns ns)))]
     (format "%s%s"

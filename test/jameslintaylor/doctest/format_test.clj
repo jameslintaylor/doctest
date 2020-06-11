@@ -12,6 +12,8 @@
       "Nested forms are treated")
   (is (= "\"abc\"" (format/form-str "abc"))
       "strings are wrapped in literal quotes")
+  (is (= "#\"abc\"" (format/form-str #"abc"))
+      "regex patterns are wrapped as a regex literal")
   (is (= "nil" (format/form-str nil))
       "nil is handled"))
 
