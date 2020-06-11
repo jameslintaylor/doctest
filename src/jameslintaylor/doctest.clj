@@ -28,34 +28,3 @@
 (defn -main [& [mode]]
   (gen-doctests)
   (println "Generated tests in" "./target/doctest/"))
-
-;;;
-;;; Test vars
-;;;
-
-(defn foo
-  "I don't do a whole lot.
-
-  Usage:
-
-  => (foo 1)
-  :foo
-
-  foo always returns :foo
-  => (foo nil)
-  :foo
-
-  => (= (foo 1) (foo 2))
-  true"
-  [_]
-  :foo)
-
-(defn bar
-  "Best function ever!
-
-  Usage:
-
-  => (bar 1 2)
-  3"
-  [x y]
-  (+ x y))
