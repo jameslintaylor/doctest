@@ -70,8 +70,7 @@
 (defn format-test-file
   [ns]
   (let [var-tests (into []
-                        (comp (map var-test-form)
-                              (filter identity)
+                        (comp (keep var-test-form)
                               (map form-str))
                         (vals (ns-interns ns)))]
     (format "%s%s"
