@@ -6,14 +6,30 @@
    [clojure.test :as test]
    [jameslintaylor.doctest.parse :as parse]))
 
-(def ^:private format-cljfmt
+(def ^:private ^{:arglists '([fmt & args])} format-cljfmt
   (comp (partial #'cljfmt/reformat-string {}) format))
 
 (defn wrap
   [n form]
   (with-meta form {::wrap n}))
 
-(defmulti form-str type)
+(defmulti form-str
+  "Given a form, return a formatted string suitable to be written to a
+  clojure test file.
+
+  If form is sequential, the :jameslintaylor.doctest.format/wrap
+  metadata determines where to begin adding new lines.
+
+  Usage:
+
+  nil and literal strings are handled appropriately
+  => (form-str '(foo nil \"bar\"))
+  \"(foo nil \"bar\")\"
+
+  elements after :jameslintaylor.doctest.format/wrap are on new lines
+  => (form-str (wrap 2 '(foo bar baz)))
+  \"(foo bar\n     baz)\""
+  type)
 
 (defn- seq-form-str [seq-form]
   (let [nwrap (::wrap (meta seq-form) (count seq-form))
