@@ -64,10 +64,11 @@
 
 (defn assertion-form
   [assertion]
-  (let [{:keys [expected expr msg]} assertion]
+  (let [{:keys [expected expr msg]} assertion
+        equality-form               (wrap 2 `(~'= ~expected ~expr))]
     (if msg
-      (wrap 2 `(~'is (~'= ~expected ~expr) ~msg))
-      `(~'is (~'= ~expected ~expr)))))
+      (wrap 2 `(~'is ~equality-form ~msg))
+      `(~'is ~equality-form))))
 
 (defn var-test-form
   [var]

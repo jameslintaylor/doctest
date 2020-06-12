@@ -52,10 +52,13 @@ Doctest will generate a corresponding test, e.g.:
    [clojure.test :as [deftest is]))
 
 (deftest ^:doctest foo-test
-  (is (= :foo (jameslintaylor.example/foo 1)))
-  (is (= :foo (jameslintaylor.example/foo nil))
+  (is (= :foo
+         (jameslintaylor.example/foo 1)))
+  (is (= :foo
+         (jameslintaylor.example/foo nil))
       "foo always returns :foo")
-  (is (= true (clojure.core/= (jameslintaylor.example/foo 1) (jameslintaylor.example/foo 2)))))
+  (is (= true
+         (clojure.core/= (jameslintaylor.example/foo 1) (jameslintaylor.example/foo 2)))))
 ```
 
 ## Running the generated tests
