@@ -89,9 +89,10 @@
 
                            a ridiculous example
                            => (is (foo :bar '(with quotes)))
-                           \"just crazy!\nreally nuts!\""
+                           \"just crazy!\n\"really nuts!\"\""
                            [])]
     (is (= [{:msg      "a ridiculous example"
              :expr     '(clojure.test/is (jameslintaylor.doctest.parse-test/foo :bar '(with quotes)))
-             :expected "just crazy!\nreally nuts!"}]
-           (parse/doctest-assertions var-with-doctest)))))
+             :expected "just crazy!\\n\\\"really nuts!\\\""}]
+           (parse/doctest-assertions var-with-doctest))
+        "special characters in literal strings are escaped")))

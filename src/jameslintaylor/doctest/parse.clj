@@ -79,6 +79,18 @@
       (resolve-sym ns expr)
       expr)))
 
+(defn- escape
+  [s]
+  (string/escape s {\"       "\\\\\\\""
+                    \newline "\\\\n"}))
+
+(defn- escape-literal
+  [s]
+  (if (= \" (first s) (last s))
+    (let [cs (subs s 1 (dec (count s)))]
+      (format "\"%s\"" (escape cs)))
+    s))
+
 (defn doctest-assertions
   "Given a var, return its doctest assertions or nil if the var does not
   contain a doctest.
@@ -101,7 +113,8 @@
     (when-not (s/invalid? doc-with-doctest)
       (let [[_ assertions] doc-with-doctest
             read-with-syms (comp (partial resolve-all (:ns (meta var)))
-                                 read-string)]
+                                 read-string
+                                 escape-literal)]
         (map (fn [a]
                (-> a
                    (update :expr read-with-syms)
