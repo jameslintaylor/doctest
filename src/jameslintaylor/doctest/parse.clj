@@ -65,20 +65,6 @@
   (s/and (delimited #"\n\n.*Usage:\n\n" 2 2)
          (s/tuple string? ::doctest)))
 
-(defn- resolve-sym
-  [ns sym]
-  (if-let [{:keys [name ns]} (meta (ns-resolve ns sym))]
-    (symbol (str ns) (str name))
-    sym))
-
-(defn- resolve-all
-  [ns expr]
-  (if (seq? expr)
-    `(~@(map (partial resolve-all ns) expr))
-    (if (symbol? expr)
-      (resolve-sym ns expr)
-      expr)))
-
 (defn- escape
   [s]
   (string/escape s {\"       "\\\\\\\""
@@ -112,11 +98,9 @@
         doc-with-doctest (s/conform ::doc-with-doctest doc)]
     (when-not (s/invalid? doc-with-doctest)
       (let [[_ assertions] doc-with-doctest
-            read-with-syms (comp (partial resolve-all (:ns (meta var)))
-                                 read-string
-                                 escape-literal)]
+            read           (comp read-string escape-literal)]
         (map (fn [a]
                (-> a
-                   (update :expr read-with-syms)
-                   (update :expected read-with-syms)))
+                   (update :expr read)
+                   (update :expected read)))
              assertions)))))
