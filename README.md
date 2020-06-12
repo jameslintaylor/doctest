@@ -58,7 +58,7 @@ Doctest will generate a corresponding test, e.g.:
          (foo nil))
       "foo always returns :foo")
   (is (= true
-         (clojure.core/= (foo 1) (foo 2)))))
+         (= (foo 1) (foo 2)))))
 ```
 
 ## Running the generated tests

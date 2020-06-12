@@ -68,11 +68,12 @@
 
 (defn- resolve-sym
   [sym]
-  (if (contains? *refer-syms* sym)
-    sym
-    (if-let [{:keys [name ns]} (meta (ns-resolve *resolve-ns* sym))]
-      (symbol (str ns) (str name))
-      sym)))
+  (let [{:keys [ns name]} (meta (ns-resolve *resolve-ns* sym))]
+    (cond
+      (contains? *refer-syms* sym)   sym
+      (= (find-ns 'clojure.core) ns) sym
+      (and ns name)                  (symbol (str ns) (str name))
+      :else                          sym)))
 
 (defn- resolve-all
   [expr]
