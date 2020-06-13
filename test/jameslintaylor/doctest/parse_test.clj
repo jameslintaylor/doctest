@@ -81,18 +81,16 @@
                      :qux"))))
 
 (deftest doctest-assertions-test
-  (is (nil? (parse/doctest-assertions (defn foo "Just a regular old docstring." []))))
-  (let [var-with-doctest (defn bar
-                           "Just a regular old docstring with some usage examples.
+  (is (nil? (parse/doctest-assertions "Just a regular old docstring." )))
+  (let [doc "Just a regular old docstring with some usage examples.
 
-                           Usage:
+             Usage:
 
-                           a ridiculous example
-                           => (is (foo :bar '(with quotes)))
-                           \"just crazy!\n\"really nuts!\"\""
-                           [])]
+             a ridiculous example
+             => (is (foo :bar '(with quotes)))
+             \"just crazy!\n\"really nuts!\"\""]
     (is (= [{:msg      "a ridiculous example"
              :expr     '(is (foo :bar '(with quotes)))
              :expected "just crazy!\\n\\\"really nuts!\\\""}]
-           (parse/doctest-assertions var-with-doctest))
+           (parse/doctest-assertions doc))
         "special characters in literal strings are escaped")))

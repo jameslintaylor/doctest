@@ -78,7 +78,7 @@
     s))
 
 (defn doctest-assertions
-  "Given a var, return its doctest assertions or nil if the var does not
+  "Given a string, return its doctest assertions or nil if it does not
   contain a doctest.
 
   A doctest assertion will be a map including values for:
@@ -91,11 +91,10 @@
   Usage:
 
   returns nil when no doctest
-  => (doctest-assertions (defn foo \"No examples!\" []))
+  => (doctest-assertions \"No examples!\")
   nil"
-  [var]
-  (let [{:keys [doc ns]} (meta var)
-        doc-with-doctest (s/conform ::doc-with-doctest doc)]
+  [s]
+  (let [doc-with-doctest (s/conform ::doc-with-doctest s)]
     (when-not (s/invalid? doc-with-doctest)
       (let [[_ assertions] doc-with-doctest
             read           (comp read-string escape-literal)]

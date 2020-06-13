@@ -111,7 +111,7 @@
   (when-let [sym-assertions (->> (ns-interns ns)
                                  (reduce-kv
                                   (fn [a sym var]
-                                    (if-let [assertions (parse/doctest-assertions var)]
+                                    (if-let [assertions (parse/doctest-assertions (:doc (meta var)))]
                                       (assoc a sym assertions)
                                       a))
                                   {})
