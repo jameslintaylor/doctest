@@ -81,7 +81,7 @@
                      :qux"))))
 
 (deftest doctest-assertions-test
-  (is (nil? (parse/doctest-assertions "Just a regular old docstring." )))
+  (is (nil? (parse/doctest-assertions "Just a regular old docstring.")))
   (let [doc "Just a regular old docstring with some usage examples.
 
              Usage:
